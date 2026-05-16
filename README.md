@@ -161,4 +161,4 @@ Data visualization by Chart.js
 
 For portfolio and educational purposes only.
 
-⚡ Done — this version is polished, technical, and portfolio-ready.
+
