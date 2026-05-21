@@ -1,18 +1,21 @@
-/* 组件 & 细节 */
+/* Defines reusable component styles and small visual UI details used across the dashboard. */
 
 .skeleton{
+  /* Creates a shimmer loading effect while weather data is being fetched. */
   background: linear-gradient(90deg, rgba(255,255,255,.06), rgba(255,255,255,.12), rgba(255,255,255,.06));
   background-size: 200% 100%;
   animation: sheen 1.4s infinite linear;
   border-radius: 8px;
   height: 14px; width: 100%;
 }
+
+/* Animates the loading gradient from right to left. */
 @keyframes sheen{
   0%{ background-position: 200% 0; }
   100%{ background-position: -200% 0; }
 }
 
-/* 小徽章（可用于状态） */
+/* Styles compact status badges used for weather-related information. */
 .badge{
   display:inline-flex; align-items:center; gap:6px;
   padding:4px 8px; border-radius:999px; font-size:12px;
