@@ -1,60 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Defines the character encoding used across the webpage. -->
   <meta charset="UTF-8" />
+
+  <!-- Makes the page responsive on different screen sizes and mobile devices. -->
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <!-- Title displayed in the browser tab. -->
   <title>Smart City Weather Dashboard</title>
 
-  <!-- 字体（可选） -->
+  <!-- Imports Google Fonts to improve the visual design and readability of the interface. -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
-  <!-- 样式 -->
+  <!-- Loads the reset stylesheet to remove browser default styling differences. -->
   <link rel="stylesheet" href="css/reset.css">
+
+  <!-- Loads the main colour theme and global visual styles for the dashboard. -->
   <link rel="stylesheet" href="css/theme.css">
+
+  <!-- Loads reusable UI component styles such as buttons, cards, and layout elements. -->
   <link rel="stylesheet" href="css/components.css">
 
-  <!-- Chart.js -->
+  <!-- Imports Chart.js library for rendering weather forecast graphs dynamically. -->
   <script src="/js/chart.umd.min.js"></script>
 
 </head>
+
 <body>
-  <!-- 背景渐变 -->
+
+  <!-- Background layer used for the animated gradient visual effect. -->
   <div class="bg"></div>
 
-  <!-- 玻璃导航 -->
+  <!-- Navigation section containing branding, city search, and action buttons. -->
   <header class="glass nav">
+
+    <!-- Dashboard logo and application name. -->
     <div class="brand">
       <div class="dot"></div>
       <span>Smart City · Weather</span>
     </div>
 
+    <!-- Interactive controls for searching and refreshing weather data. -->
     <div class="actions">
+
+      <!-- User input field for entering a city name. -->
       <input id="cityInput" class="input" placeholder="Search city… (e.g. Hong Kong)" />
+
+      <!-- Shortcut button that loads Hong Kong weather data quickly. -->
       <button id="useHK" class="btn ghost">Hong Kong</button>
+
+      <!-- Button used to refresh and reload weather information from the API. -->
       <button id="refreshBtn" class="btn primary">Refresh</button>
     </div>
   </header>
 
-  <!-- 主容器 -->
+  <!-- Main dashboard container holding weather cards and forecast sections. -->
   <main class="container">
-    <!-- 当前天气卡 -->
+
+    <!-- Current weather information card. -->
     <section class="glass card current">
+
+      <!-- Left side displays temperature, condition, city, and update time. -->
       <div class="current-left">
         <div class="temp" id="curTemp">--°</div>
         <div class="condition" id="curCond">Loading…</div>
         <div class="city" id="curCity">--</div>
         <div class="time" id="curTime">--</div>
       </div>
+
+      <!-- Right side displays additional weather metrics. -->
       <div class="current-right">
+
+        <!-- Displays the perceived temperature value. -->
         <div class="metric">
           <span class="label">Feels like</span>
           <span class="value" id="curFeels">--°</span>
         </div>
+
+        <!-- Displays humidity percentage. -->
         <div class="metric">
           <span class="label">Humidity</span>
           <span class="value" id="curHum">--%</span>
         </div>
+
+        <!-- Displays wind speed information. -->
         <div class="metric">
           <span class="label">Wind</span>
           <span class="value" id="curWind">-- m/s</span>
@@ -62,27 +93,35 @@
       </div>
     </section>
 
-    <!-- 24小时趋势图 -->
+    <!-- Weather forecast chart section for displaying the next 24 hours. -->
     <section class="glass card">
       <div class="card-title">Next 24 Hours</div>
+
+      <!-- Canvas element where Chart.js renders the hourly weather graph. -->
       <canvas id="hourlyChart" height="120"></canvas>
     </section>
 
-    <!-- 未来几天 -->
+    <!-- Daily weather forecast section dynamically populated by JavaScript. -->
     <section class="days">
       <div class="card-title">Daily Forecast</div>
+
+      <!-- Container used for injecting daily forecast cards through DOM manipulation. -->
       <div id="daysWrap" class="days-grid">
         <!-- Daily cards injected here -->
       </div>
     </section>
   </main>
 
+  <!-- Footer showing data source and dashboard ownership information. -->
   <footer class="footer">
     <span>Data via Open-Meteo · Cached by server · © Smart City</span>
   </footer>
 
+  <!-- Loads Chart.js again for graph rendering support. -->
   <script src="/js/chart.umd.min.js"></script>
-<script src="/js/script.js"></script>
+
+  <!-- Main JavaScript file responsible for API requests, DOM updates, validation, and charts. -->
+  <script src="/js/script.js"></script>
 
 </body>
 </html>
