@@ -1,10 +1,13 @@
-// 生产环境（Render）和本地 3000 端口都能工作
+// Selects the correct API endpoint for both local development and Render deployment.
 const API_BASE = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
   ? (location.port === '3000' ? '/api/weather' : 'http://localhost:3000/api/weather')
   : '/api/weather';
 
 
+// Short helper function for selecting one DOM element.
 const qs = sel => document.querySelector(sel);
+
+// Stores all frequently used DOM elements in one object to avoid repeated querySelector calls.
 const el = {
   curTemp: qs('#curTemp'),
   curCond: qs('#curCond'),
@@ -20,19 +23,22 @@ const el = {
   hourlyCanvas: qs('#hourlyChart')
 };
 
-let chart; // Chart.js 实例
+let chart; // Stores the current Chart.js instance so it can be replaced when new data is loaded.
 
+// Converts an ISO date/time string into a readable local display format.
 function fmtTime(iso){
   try{
     return new Date(iso).toLocaleString([], { hour: '2-digit', minute: '2-digit', month:'short', day:'2-digit' });
   }catch{ return iso; }
 }
+
+// Converts a date string into a short weekday label for the daily forecast cards.
 function dow(iso){
   try{ return new Date(iso).toLocaleDateString([], { weekday: 'short' }); }
   catch{ return '--'; }
 }
 
-// 简单图标映射
+// Maps weather condition text to a simple visual icon for easier user reading.
 function iconByText(t){
   t = (t||'').toLowerCase();
   if(t.includes('clear')) return '☀️';
@@ -44,6 +50,7 @@ function iconByText(t){
   return '🌡️';
 }
 
+// Requests weather data from the backend API and safely encodes the city name for the URL.
 async function fetchWeather(city){
   const url = `${API_BASE}?city=${encodeURIComponent(city || 'Hong Kong')}`;
   const res = await fetch(url);
@@ -51,6 +58,7 @@ async function fetchWeather(city){
   return await res.json();
 }
 
+// Updates the current weather section using data returned from the API.
 function renderCurrent(cur){
   el.curTemp.textContent = `${Math.round(cur.temperature)}°`;
   el.curCond.textContent = cur.conditionText || '—';
@@ -61,6 +69,7 @@ function renderCurrent(cur){
   el.curWind.textContent = `${cur.windSpeed}`;
 }
 
+// Creates and inserts daily forecast cards into the page.
 function renderDaily(days){
   el.daysWrap.innerHTML = '';
   days.slice(0,7).forEach(d=>{
@@ -78,18 +87,23 @@ function renderDaily(days){
   });
 }
 
+// Renders the 24-hour temperature and precipitation chart using Chart.js.
 function renderHourly(hourly){
   const labels = hourly.slice(0,24).map(h => new Date(h.time).toLocaleTimeString([], { hour: '2-digit' }));
   const temps  = hourly.slice(0,24).map(h => h.temp);
   const rain   = hourly.slice(0,24).map(h => h.precipitation);
 
+  // Destroys the previous chart before drawing a new one to prevent duplicated charts.
   if(chart) chart.destroy();
 
   const ctx = el.hourlyCanvas.getContext('2d');
+
+  // Creates a gradient line colour for the temperature dataset.
   const grad = ctx.createLinearGradient(0, 0, 0, 140);
   grad.addColorStop(0, 'rgba(124,58,237,0.85)');
   grad.addColorStop(1, 'rgba(6,182,212,0.35)');
 
+  // Builds a mixed line and bar chart for temperature and precipitation.
   chart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -139,6 +153,7 @@ function renderHourly(hourly){
   });
 }
 
+// Main loading function that connects API data with all UI rendering functions.
 async function load(city){
   try{
     const data = await fetchWeather(city);
@@ -151,18 +166,20 @@ async function load(city){
   }
 }
 
+// Attaches user interaction events for city search, Hong Kong shortcut, and refresh button.
 function bind(){
   el.btnHK.addEventListener('click', ()=> load('Hong Kong'));
   el.btnRefresh.addEventListener('click', ()=>{
     const c = el.cityInput.value.trim() || 'Hong Kong';
-    load(c);   // ✅ 输入啥城市就传啥
+    load(c);   // Loads the typed city, or falls back to Hong Kong if the input is empty.
   });
   el.cityInput.addEventListener('keydown', e=>{
     if(e.key === 'Enter'){
-      load(el.cityInput.value.trim() || 'Hong Kong'); // ✅ 回车也支持输入的城市
+      load(el.cityInput.value.trim() || 'Hong Kong'); // Supports searching by pressing Enter.
     }
   });
 }
 
+// Initialises event listeners and loads Hong Kong as the default city when the page opens.
 bind();
 load('Hong Kong');
